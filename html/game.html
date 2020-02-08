@@ -1,0 +1,60 @@
+<head>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script type="text/javascript" src="/html/a.js"></script>
+	<style type="text/css">
+		table {
+			text-align: center;
+			margin: auto;
+			margin-top:100px;
+			border: solid;
+			border-width: 3px;
+			border-color: black;
+			border-radius: 10px;
+			padding: 15px;
+		}
+
+		td {
+			color: green;
+			border-style: solid;
+			border-color: lightgrey;
+			border-width: 2px;
+			border-radius: 6px;
+			height: 50px;
+			width: 50px;
+			text-align: center;
+		}
+
+		.hedge {
+			border-style: none;
+			height: 15px;
+		}
+
+		.vedge {
+			border-style: none;
+			width: 15px;
+		}
+
+		.joint {
+			border-style: none;
+			height: 15px;
+			width: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<h3 id="status" hidden="true" style="text-align: center;margin:auto;margin-top:50px">Waiting...</h3>
+	<h3 id="status2" hidden="true" style="text-align: center;margin:auto">Waiting</h3>
+	<table id="board" hidden="true"> </table>
+	<div id="once" style="text-align:center;margin:auto;margin-top:100px">
+		<input type="number" placeholder="Chessboard Size" id="textbox" style="width:180px"><br>
+		<input type="text" placeholder="Room Password" id="password" style="width:180px"><br>
+		<input type="button" value="Start Game!" onclick="Init()" style="width:180px"><br>
+		<input type="button" style="width:180px" value="PlayAlone" onclick="window.location='http://game.gster.top:2333/playalone'">
+	</div>
+	<div style="text-align: center;color:red">
+		<p id="result" hidden="true"><p>
+	</div>
+</body>
+

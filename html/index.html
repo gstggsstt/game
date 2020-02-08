@@ -1,0 +1,33 @@
+<body>
+	<ul id="m"></ul>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script>
+		$(function(){
+			var socket=io();
+			$('#name').submit(function(){
+				alert("submit1");
+				socket.emit('join',$('#nametxt').val());
+				$('#nametxt').val('');
+				return false;
+			});
+			$('#msg').submit(function(){
+				alert("submit2");
+				socket.emit('chat message',JSON.stringify({name:$('#nametxt').val(), msg:$('#msgtxt').val()}));
+				$('#nametxt').val('');
+				return false;
+			});
+			socket.on('response message', function(msg){
+				$('#m').append($('<li>').text(msg));
+			});
+		});
+	</script>
+	<form id="name" action="">
+		<input type="text" id='nametxt'>
+		<input type="submit">
+	</form>
+	<form id="msg" action="">
+		<input type="text" id='msgtxt'>
+		<input type="submit">
+	</form>
+</body>
