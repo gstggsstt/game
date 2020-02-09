@@ -10,8 +10,16 @@ app.get('/playalone', function(req, res){
 	res.sendFile(__dirname + '/html/game2.html');
 });
 
+app.get('/rules', function(req, res){
+	res.sendFile(__dirname + '/img/a.png');
+});
+
 app.get('/html/a.js', function(req, res){
 	res.sendFile(__dirname + '/html/a.js');
+});
+
+app.get('/html/b.js', function(req, res){
+	res.sendFile(__dirname + '/html/b.js');
 });
 
 app.get('/create', function(req, res){
@@ -21,6 +29,8 @@ app.get('/create', function(req, res){
 var temp={};
 var idmap={};
 var nmap={};
+var limmap={};
+var flmap={};
 
 io.on('connection', function(socket){
 	console.log(socket.id+" connected");
@@ -34,8 +44,10 @@ io.on('connection', function(socket){
 		idmap[temp[name].o]=undefined;
 		temp[name]=undefined;
 		nmap[name]=undefined;
+		limmap[name]=undefined;
+		flmap[name]=undefined;
 	});
-	socket.on('join', function(name, N){
+	socket.on('join', function(name, N, lim, fl){
 		console.log("get"+name);
 		console.log("id:"+socket.id);
 		if(temp[name]==undefined) {
@@ -43,13 +55,13 @@ io.on('connection', function(socket){
 			idmap[socket.id]=name;
 			io.to(socket.id).emit('x');
 			nmap[name]=N;
+			limmap[name]=lim;
+			flmap[name]=fl;
 		}
 		else if(temp[name].o==undefined) {
-			if(N!=nmap[name])
-				socket.emit('size error');
 			temp[name].o=socket.id;
 			idmap[socket.id]=name;
-			io.to(socket.id).emit('o');
+			io.to(socket.id).emit('o', nmap[name], limmap[name], flmap[name]);
 			io.to(temp[name].x).emit('ready');
 			io.to(temp[name].o).emit('ready');
 		}

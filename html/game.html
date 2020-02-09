@@ -6,7 +6,7 @@
 		table {
 			text-align: center;
 			margin: auto;
-			margin-top:100px;
+			margin-top:30px;
 			border: solid;
 			border-width: 3px;
 			border-color: black;
@@ -47,11 +47,16 @@
 	<h3 id="status" hidden="true" style="text-align: center;margin:auto;margin-top:50px">Waiting...</h3>
 	<h3 id="status2" hidden="true" style="text-align: center;margin:auto">Waiting</h3>
 	<table id="board" hidden="true"> </table>
-	<div id="once" style="text-align:center;margin:auto;margin-top:100px">
-		<input type="number" placeholder="Chessboard Size" id="textbox" style="width:180px"><br>
-		<input type="text" placeholder="Room Password" id="password" style="width:180px"><br>
-		<input type="button" value="Start Game!" onclick="Init()" style="width:180px"><br>
-		<input type="button" style="width:180px" value="PlayAlone" onclick="window.location='http://game.gster.top:2333/playalone'">
+	<div id="once" style="text-align:center;margin:auto;margin-top:50px">
+		<input type="number" placeholder="Chessboard Size" id="textbox" style="width:270px"><br>
+		<input type="text" placeholder="Room Password" id="password" style="width:270px;margin-top:10px"><br>
+		<input type="number" placeholder="Continuous Edge Lim(default 0 no lim)" id="lim" style="width:270px;margin-top:10px"><br>
+		<input type="checkbox" id="fl" style="margin-top:10px">
+			<label style="font-size:12px"> Allow X and O share the same box </label>
+		</input><br>
+		<input type="button" value="Start Game!" onclick="Init()" style="width:270px;margin-top:10px"><br>
+		<input type="button" style="width:270px;margin-top:10px" value="PlayAlone" onclick="window.location='http://game.gster.top:2333/playalone'"><br>
+		<input type="button" style="width:270px;margin-top:10px" value="SeeRules" onclick="window.location='http://game.gster.top:2333/rules'">
 	</div>
 	<div style="text-align: center;color:red">
 		<p id="result" hidden="true"><p>

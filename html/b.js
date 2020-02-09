@@ -15,8 +15,6 @@ var hEdge = [],
 	vEdge = []
 var goodBox = [];
 var cnt = 0;
-var socket=io();
-var remote_op = false;
 var infostr = "";
 var allowTogether = false;
 var password = "";
@@ -141,8 +139,6 @@ function MoveTo(pos, i, j, str) {
 }
 
 function ClickBox(i, j) {
-	if(!ready) return ;
-	if(remote_op==false && role!=current) return ;
 	var str = "O", pos = posB;
 	if (current) str = "X", pos = posA;
 	if (turn < 1)
@@ -150,9 +146,6 @@ function ClickBox(i, j) {
 		if(pos.x!=i || pos.y!=j) return ;
 		ShowEdge("");
 		Switch();
-		if(remote_op==false)
-			socket.emit("click","box_"+i+"_"+j);
-		else remote_op=false;
 		return;
 	}
 	if (!find(goodBox, { x: i, y: j })) return;
@@ -161,9 +154,6 @@ function ClickBox(i, j) {
 	hispos.push({ x: i, y: j });
 	if (turn >= 1) ShowNext(pos);
 	else ShowEdge("#8EC6FE");
-	if(remote_op==false)
-		socket.emit("click","box_"+i+"_"+j);
-	else remote_op=false;
 }
 
 function find(l, x) {
@@ -204,8 +194,6 @@ function RePaint(visited)
 			else if(visited[i][j]==2) SetBoxColor(i,j,"#BCE9FB");
 			else SetBoxColor(i,j,"#F6C3C3");
 		}
-
-	$('#status').text("Game Over! Refresh page to play again.");
 }
 
 function Switch() {
@@ -243,33 +231,24 @@ function Switch() {
 		p.hidden=false;
 		p.innerText=str;
 	}
-	ShowStatus();
 }
 
 function ClickVedge(i, j) {
-	if(remote_op==false && role!=current) return ;
 	if (turn != 0) return;
 	if (!find(vEdge, { x: i, y: j })) return;
 	vblock[i][j] = true;
 	ShowEdge("");
 	SetVedgeColor({ x: i, y: j }, "red");
 	Switch();
-	if(remote_op==false)
-		socket.emit("click","vedge_"+i+"_"+j);
-	else remote_op=false;
 }
 
 function ClickHedge(i, j) {
-	if(remote_op==false && role!=current) return ;
 	if (turn != 0) return;
 	if (!find(hEdge, { x: i, y: j })) return;
 	hblock[i][j] = true;
 	ShowEdge("");
 	SetHedgeColor({ x: i, y: j }, "red");
 	Switch();
-	if(remote_op==false)
-		socket.emit("click","hedge_"+i+"_"+j);
-	else remote_op=false;
 }
 
 function fff() {
@@ -320,11 +299,13 @@ function fff() {
 	Switch();
 };
 
-function SetArgs(nn, ll, ff) {
-	N=nn;
-	lim=ll;
-	allowTogether=ff;
-	infostr="(Size: "+N+"; Pwd: "+password+"; Lim: "+lim+"; AllowShareBox: "+allowTogether+")";
+function Init(e) {
+	var textbox = document.getElementById("textbox");
+	var limbox = document.getElementById("lim");
+	var checkbox = document.getElementById("fl");
+	if(textbox.value!="") N = parseInt(textbox.value);
+	if(limbox.value!="")lim = parseInt(limbox.value);
+	allowTogether=checkbox.checked;
 	xx = Math.floor((N - 1) / 2);
 	yy = Math.floor((N + 1) / 2);
 	posA = { x: xx, y: xx };
@@ -335,72 +316,6 @@ function SetArgs(nn, ll, ff) {
 	div.hidden = true;
 	var table = document.getElementById("board");
 	table.hidden=false;
-	var h3 = document.getElementById("status");
-	h3.hidden=false;
-	h3.innerText="Waiting for player to join.\n"+infostr;
-	h3 = document.getElementById("status2");
-	h3.hidden=false;
+	fff();
 }
-
-function Init() {
-	password = document.getElementById("password").value;
-	if(password=="") {
-		alert("Please enter password!");
-		window.location.reload();
-	}
-	var textbox = document.getElementById("textbox");
-	var limbox = document.getElementById("lim");
-	var checkbox = document.getElementById("fl");
-	if(textbox.value!="")N   = parseInt(textbox.value);
-	if(limbox .value!="")lim = parseInt(limbox.value);
-	allowTogether = checkbox.checked;
-	socket.emit("join",password,N,lim,allowTogether);
-}
-
-function ShowStatus()
-{
-	if(role==current)
-	{
-		$("#status2").text("Your turn");
-		$("#status2").css("color","green");
-	}
-	else
-	{
-		$("#status2").text("Waiting");
-		$("#status2").css("color","orange");
-	}
-}
-
-
-$(function() {
-	socket.on('x', function(){
-		SetArgs(N, lim, allowTogether);
-		fff();
-		role=true;
-		ShowStatus();
-	});
-	socket.on('o', function(_N, _lim, _fl){
-		SetArgs(_N, _lim, _fl);
-		fff();
-		role=false;
-		ShowStatus();
-	});
-	socket.on('ready', function(){
-		ready=true;
-		$('#status').text('Started!\n'+infostr);
-		$('#status').css('color','red');
-	});
-	socket.on('used', function(){
-		alert('Password has been used.');
-		window.location.reload();
-	});
-	socket.on('escape', function(){
-		alert('Another user escaped.');
-		window.location.reload();
-	});
-	socket.on('click', function(id){
-		remote_op=true;
-		document.getElementById(id).click();
-	});
-});
 
