@@ -340,6 +340,7 @@ function SetArgs(nn, ll, ff) {
 	h3.innerText="Waiting for player to join.\n"+infostr;
 	h3 = document.getElementById("status2");
 	h3.hidden=false;
+	document.getElementById("chat").hidden=false;
 }
 
 function Init() {
@@ -369,6 +370,14 @@ function ShowStatus()
 		$("#status2").text("Waiting");
 		$("#status2").css("color","orange");
 	}
+}
+
+function SendMsg(){
+	var textbox=document.getElementById("msg");
+	var msg=textbox.value;
+	textbox.value="";
+	socket.emit('msg', msg);
+	textbox.placeholder="Sent";
 }
 
 
@@ -401,6 +410,9 @@ $(function() {
 	socket.on('click', function(id){
 		remote_op=true;
 		document.getElementById(id).click();
+	});
+	socket.on('msg', function(msg){
+		alert("Message:\n"+msg);
 	});
 });
 

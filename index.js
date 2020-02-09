@@ -74,6 +74,13 @@ io.on('connection', function(socket){
 		else
 			io.to(temp[name].x).emit('click',id);
 	});
+	socket.on('msg', function(msg){
+		var name=idmap[socket.id];
+		if(socket.id==temp[name].x)
+			io.to(temp[name].o).emit('msg',msg);
+		if(socket.id==temp[name].o)
+			io.to(temp[name].x).emit('msg',msg);
+	});
 });
 
 http.listen(2333, function(){
